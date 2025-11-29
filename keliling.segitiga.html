@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segitiga Interaktif dengan Grid Kotak di Luar Sisi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            padding: 40px;
+            max-width: 1000px;
+            width: 100%;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            font-size: 32px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        label {
+            font-weight: 700;
+            color: #1e3c72;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="number"] {
+            padding: 12px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #7e22ce;
+            background-color: #faf5ff;
+            box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 13px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-draw {
+            background: linear-gradient(135deg, #7e22ce 0%, #5e1ba9 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(126, 34, 206, 0.3);
+        }
+
+        .btn-draw:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(126, 34, 206, 0.4);
+        }
+
+        .btn-draw:active {
+            transform: translateY(0);
+        }
+
+        .btn-reset {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-reset:hover {
+            background: #e8e8e8;
+            border-color: #d0d0d0;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+            font-weight: 600;
+            background: #ffebee;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border-left: 4px solid #d32f2f;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.3s ease-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .info-section {
+            background: linear-gradient(135deg, #f0f4ff 0%, #faf5ff 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border: 2px solid #e8d5f2;
+            display: none;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .info-box {
+            margin: 12px 0;
+        }
+
+        .info-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1e3c72;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .info-text {
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 4px solid #7e22ce;
+        }
+
+        .grid-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 2px solid #e8d5f2;
+        }
+
+        .grid-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 13px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .grid-item:last-child {
+            border-bottom: none;
+        }
+
+        .grid-label {
+            font-weight: 600;
+            color: #1e3c72;
+        }
+
+        .grid-count {
+            background: linear-gradient(135deg, #7e22ce 0%, #5e1ba9 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .formula-box {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .formula-title {
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 8px;
+        }
+
+        .canvas-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        svg {
+            border: 3px solid #e8d5f2;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #fafbff 0%, #f5f0ff 100%);
+            width: 100%;
+            height: auto;
+            max-height: 600px;
+            box-shadow: 0 10px 30px rgba(126, 34, 206, 0.15);
+            transition: box-shadow 0.3s;
+        }
+
+        svg:hover {
+            box-shadow: 0 15px 40px rgba(126, 34, 206, 0.25);
+        }
+
+        .square:hover {
+            opacity: 1 !important;
+            cursor: pointer;
+            filter: brightness(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            svg {
+                max-height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔺 Segitiga Interaktif dengan Grid Kotak</h1>
+        <p class="subtitle">Visualisasi segitiga dan hitung keliling serta luasnya</p>
+
+        <div class="content">
+            <!-- Input Section -->
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="sideA">📏 Sisi a</label>
+                    <input type="number" id="sideA" placeholder="Masukkan panjang sisi" min="1" step="1">
+                    <div class="error-message" id="errorA"></div>
+                </div>
+
+                <div class="input-group">
+                    <label for="sideB">📏 Sisi b</label>
+                    <input type="number" id="sideB" placeholder="Masukkan panjang sisi" min="1" step="1">
+                    <div class="error-message" id="errorB"></div>
+                </div>
+
+                <div class="input-group">
+                    <label for="sideC">📏 Sisi c</label>
+                    <input type="number" id="sideC" placeholder="Masukkan panjang sisi" min="1" step="1">
+                    <div class="error-message" id="errorC"></div>
+                </div>
+
+                <div class="error-message" id="errorTriangle"></div>
+
+                <div class="button-group">
+                    <button class="btn-draw" onclick="drawTriangle()">Gambar Segitiga</button>
+                    <button class="btn-reset" onclick="resetForm()">Reset</button>
+                </div>
+
+                <div class="info-section" id="infoSection">
+                    <!-- Grid Information -->
+                    <div class="grid-info">
+                        <div class="info-label">📊 Jumlah Kotak pada Setiap Sisi</div>
+                        <div class="grid-item">
+                            <span class="grid-label">Sisi a</span>
+                            <span class="grid-count" id="countA">0</span>
+                        </div>
+                        <div class="grid-item">
+                            <span class="grid-label">Sisi b</span>
+                            <span class="grid-count" id="countB">0</span>
+                        </div>
+                        <div class="grid-item">
+                            <span class="grid-label">Sisi c</span>
+                            <span class="grid-count" id="countC">0</span>
+                        </div>
+                        <div class="grid-item" style="border-top: 2px solid #7e22ce; margin-top: 10px; padding-top: 10px; font-weight: 700;">
+                            <span class="grid-label">Total Kotak</span>
+                            <span class="grid-count" id="totalCount">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Perimeter -->
+                    <div class="info-box">
+                        <div class="info-label">📐 Keliling</div>
+                        <div class="info-text" id="perimeterText"></div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <!-- Canvas Section -->
+            <div class="canvas-section">
+                <svg id="canvas" viewBox="0 0 700 600" xmlns="http://www.w3.org/2000/svg"></svg>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const PADDING = 80;
+        const MAX_SIZE = 350;
+        const MIN_CELL_SIZE = 6;
+
+        function getInputValues() {
+            const a = parseFloat(document.getElementById('sideA').value);
+            const b = parseFloat(document.getElementById('sideB').value);
+            const c = parseFloat(document.getElementById('sideC').value);
+            return { a, b, c };
+        }
+
+        function validateInputs(a, b, c) {
+            const errors = { a: '', b: '', c: '', triangle: '' };
+
+            if (!a || a <= 0 || !Number.isFinite(a)) {
+                errors.a = 'Masukkan bilangan positif';
+            }
+            if (!b || b <= 0 || !Number.isFinite(b)) {
+                errors.b = 'Masukkan bilangan positif';
+            }
+            if (!c || c <= 0 || !Number.isFinite(c)) {
+                errors.c = 'Masukkan bilangan positif';
+            }
+
+            if (errors.a || errors.b || errors.c) {
+                showErrors(errors);
+                return false;
+            }
+
+            if (a + b <= c || a + c <= b || b + c <= a) {
+                errors.triangle = '❌ Sisi tidak membentuk segitiga — periksa kembali.';
+                showErrors(errors);
+                return false;
+            }
+
+            return true;
+        }
+
+        function showErrors(errors) {
+            document.getElementById('errorA').textContent = errors.a;
+            document.getElementById('errorA').classList.toggle('show', !!errors.a);
+
+            document.getElementById('errorB').textContent = errors.b;
+            document.getElementById('errorB').classList.toggle('show', !!errors.b);
+
+            document.getElementById('errorC').textContent = errors.c;
+            document.getElementById('errorC').classList.toggle('show', !!errors.c);
+
+            document.getElementById('errorTriangle').textContent = errors.triangle;
+            document.getElementById('errorTriangle').classList.toggle('show', !!errors.triangle);
+        }
+
+        function calculateTriangleCoordinates(a, b, c) {
+            const A = { x: 0, y: 0 };
+            const B = { x: a, y: 0 };
+            
+            const x_C = (b * b + a * a - c * c) / (2 * a);
+            const y_C = Math.sqrt(b * b - x_C * x_C);
+            const C = { x: x_C, y: y_C };
+
+            return { A, B, C };
+        }
+
+        function getScale(coords, a, b, c) {
+            const maxVal = Math.max(a, b, c);
+            return MAX_SIZE / maxVal;
+        }
+
+        function getGridSquareSize(sideLength, scale) {
+            const pixelLength = sideLength * scale;
+            const count = Math.round(sideLength);
+            return Math.max(pixelLength / count, MIN_CELL_SIZE);
+        }
+
+        function getOuterNormal(p1, p2, centroid) {
+            const dx = p2.x - p1.x;
+            const dy = p2.y - p1.y;
+            const len = Math.sqrt(dx * dx + dy * dy);
+            
+            let nx = -dy / len;
+            let ny = dx / len;
+            
+            const midX = (p1.x + p2.x) / 2;
+            const midY = (p1.y + p2.y) / 2;
+            const testX = midX + nx;
+            const testY = midY + ny;
+            
+            const distToTest = Math.sqrt(
+                (testX - centroid.x) ** 2 + (testY - centroid.y) ** 2
+            );
+            const distToMid = Math.sqrt(
+                (midX - centroid.x) ** 2 + (midY - centroid.y) ** 2
+            );
+            
+            if (distToTest < distToMid) {
+                nx = -nx;
+                ny = -ny;
+            }
+            
+            return { x: nx, y: ny };
+        }
+
+        function drawGridSquares(svg, p1, p2, count, cellSize, centroid) {
+            const dx = p2.x - p1.x;
+            const dy = p2.y - p1.y;
+            const len = Math.sqrt(dx * dx + dy * dy);
+            const ux = dx / len;
+            const uy = dy / len;
+            
+            const normal = getOuterNormal(p1, p2, centroid);
+            const nx = normal.x;
+            const ny = normal.y;
+            
+            for (let i = 0; i < count; i++) {
+                const x = p1.x + ux * i * cellSize + nx * cellSize * 1.2;
+                const y = p1.y + uy * i * cellSize + ny * cellSize * 1.2;
+                
+                const angle = Math.atan2(uy, ux);
+                
+                const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                group.setAttribute('transform', `translate(${x}, ${y}) rotate(${angle * 180 / Math.PI})`);
+                
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('x', 0);
+                rect.setAttribute('y', 0);
+                rect.setAttribute('width', cellSize);
+                rect.setAttribute('height', cellSize);
+                rect.setAttribute('fill', `hsl(${260 + i * 5}, 70%, 60%)`);
+                rect.setAttribute('stroke', '#5e1ba9');
+                rect.setAttribute('stroke-width', 2);
+                rect.setAttribute('class', 'square');
+                rect.setAttribute('opacity', 0.75);
+                
+                rect.addEventListener('mouseenter', (e) => {
+                    rect.setAttribute('opacity', 1);
+                });
+                rect.addEventListener('mouseleave', (e) => {
+                    rect.setAttribute('opacity', 0.75);
+                });
+                
+                group.appendChild(rect);
+                svg.appendChild(group);
+            }
+        }
+
+        function drawTriangle() {
+            const { a, b, c } = getInputValues();
+            
+            if (!validateInputs(a, b, c)) {
+                document.getElementById('infoSection').style.display = 'none';
+                return;
+            }
+
+            const svg = document.getElementById('canvas');
+            svg.innerHTML = '';
+
+            const coords = calculateTriangleCoordinates(a, b, c);
+            const scale = getScale(coords, a, b, c);
+
+            // Center the triangle on the canvas
+            const svgWidth = 700;
+            const svgHeight = 600;
+            const minX = Math.min(coords.A.x, coords.B.x, coords.C.x) * scale;
+            const maxX = Math.max(coords.A.x, coords.B.x, coords.C.x) * scale;
+            const minY = Math.min(coords.A.y, coords.B.y, coords.C.y) * scale;
+            const maxY = Math.max(coords.A.y, coords.B.y, coords.C.y) * scale;
+
+            const width = maxX - minX;
+            const height = maxY - minY;
+            const centerOffsetX = (svgWidth - width) / 2 - minX;
+            const centerOffsetY = (svgHeight - height) / 2 - minY + PADDING / 2;
+
+            const A = { x: coords.A.x * scale + centerOffsetX, y: coords.A.y * scale + centerOffsetY };
+            const B = { x: coords.B.x * scale + centerOffsetX, y: coords.B.y * scale + centerOffsetY };
+            const C = { x: coords.C.x * scale + centerOffsetX, y: coords.C.y * scale + centerOffsetY };
+
+            const centroid = {
+                x: (A.x + B.x + C.x) / 3,
+                y: (A.y + B.y + C.y) / 3
+            };
+
+            // Draw triangle with gradient
+            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+            gradient.setAttribute('id', 'triangleGradient');
+            gradient.setAttribute('x1', '0%');
+            gradient.setAttribute('y1', '0%');
+            gradient.setAttribute('x2', '100%');
+            gradient.setAttribute('y2', '100%');
+            
+            const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+            stop1.setAttribute('offset', '0%');
+            stop1.setAttribute('stop-color', '#7e22ce');
+            stop1.setAttribute('stop-opacity', '0.15');
+            
+            const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+            stop2.setAttribute('offset', '100%');
+            stop2.setAttribute('stop-color', '#5e1ba9');
+            stop2.setAttribute('stop-opacity', '0.25');
+            
+            gradient.appendChild(stop1);
+            gradient.appendChild(stop2);
+            defs.appendChild(gradient);
+            svg.appendChild(defs);
+
+            const triangle = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            triangle.setAttribute('points', `${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`);
+            triangle.setAttribute('fill', 'url(#triangleGradient)');
+            triangle.setAttribute('stroke', '#7e22ce');
+            triangle.setAttribute('stroke-width', 3);
+            svg.appendChild(triangle);
+
+            // Draw vertices
+            const vertices = [A, B, C];
+            const labels = ['A', 'B', 'C'];
+            vertices.forEach((v, i) => {
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', v.x);
+                circle.setAttribute('cy', v.y);
+                circle.setAttribute('r', 6);
+                circle.setAttribute('fill', '#5e1ba9');
+                circle.setAttribute('stroke', 'white');
+                circle.setAttribute('stroke-width', 2);
+                svg.appendChild(circle);
+
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', v.x + 15);
+                text.setAttribute('y', v.y - 10);
+                text.setAttribute('font-size', 18);
+                text.setAttribute('font-weight', 'bold');
+                text.setAttribute('fill', '#1e3c72');
+                text.textContent = labels[i];
+                svg.appendChild(text);
+            });
+
+            // Draw side labels
+            const sideLabels = [
+                { p1: A, p2: B, text: a.toFixed(1), offset: -20 },
+                { p1: B, p2: C, text: c.toFixed(1), offset: 15 },
+                { p1: C, p2: A, text: b.toFixed(1), offset: -20 }
+            ];
+            
+            sideLabels.forEach(side => {
+                const midX = (side.p1.x + side.p2.x) / 2;
+                const midY = (side.p1.y + side.p2.y) / 2;
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', midX);
+                text.setAttribute('y', midY + side.offset);
+                text.setAttribute('font-size', 14);
+                text.setAttribute('fill', '#7e22ce');
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-weight', 'bold');
+                text.setAttribute('background', 'white');
+                text.textContent = side.text;
+                svg.appendChild(text);
+            });
+
+            // Draw grid squares
+            const cellSizeA = getGridSquareSize(a, scale);
+            const cellSizeB = getGridSquareSize(b, scale);
+            const cellSizeC = getGridSquareSize(c, scale);
+
+            const countA = Math.round(a);
+            const countB = Math.round(b);
+            const countC = Math.round(c);
+
+            drawGridSquares(svg, A, B, countA, cellSizeA, centroid);
+            drawGridSquares(svg, B, C, countC, cellSizeC, centroid);
+            drawGridSquares(svg, C, A, countB, cellSizeB, centroid);
+
+            // Display info
+            const perimeter = a + b + c;
+            const s = perimeter / 2;
+            const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+
+            document.getElementById('countA').textContent = countA;
+            document.getElementById('countB').textContent = countB;
+            document.getElementById('countC').textContent = countC;
+            document.getElementById('totalCount').textContent = countA + countB + countC;
+
+            document.getElementById('perimeterText').innerHTML = 
+                `${a.toFixed(1)} + ${b.toFixed(1)} + ${c.toFixed(1)} = <strong>${perimeter.toFixed(1)}</strong>`;
+
+            document.getElementById('infoSection').style.display = 'block';
+
+            showErrors({ a: '', b: '', c: '', triangle: '' });
+        }
+
+        function resetForm() {
+            document.getElementById('sideA').value = '';
+            document.getElementById('sideB').value = '';
+            document.getElementById('sideC').value = '';
+            document.getElementById('canvas').innerHTML = '';
+            document.getElementById('infoSection').style.display = 'none';
+            showErrors({ a: '', b: '', c: '', triangle: '' });
+        }
+
+        // Allow Enter key to draw
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') drawTriangle();
+            });
+        });
+    </script>
+</body>
+</html>
