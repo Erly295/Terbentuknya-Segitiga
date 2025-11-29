@@ -327,6 +327,18 @@
         return;
       }
 
+      // Cek apakah c lebih kecil dari a dan b
+      if (c < a && c < b) {
+        state.result = { 
+          valid: false, 
+          userCorrect: false, 
+          message: 'Segitiga tidak dapat terbentuk! Sisi c harus merupakan sisi terpanjang atau minimal sama panjang dengan salah satu sisi lainnya.' 
+        };
+        showResult();
+        showInvalidShape();
+        return;
+      }
+
       const userAnswer = state.operator;
       const sum = a + b;
       let correctOperator = '';
@@ -432,9 +444,9 @@
       const angleP2Deg = Math.acos(Math.max(-1, Math.min(1, cosP2))) * (180 / Math.PI);
       const angleP3Deg = 180 - angleP1Deg - angleP2Deg;
 
-      const sudutA = { angle: angleP1Deg, px: p1.x, py: p1.y };
-      const sudutB = { angle: angleP2Deg, px: p2.x, py: p2.y };
-      const sudutC = { angle: angleP3Deg, px: p3.x, py: p3.y };
+      const sudutA = { angle: angleP1Deg.toFixed(2), px: p1.x, py: p1.y };
+      const sudutB = { angle: angleP2Deg.toFixed(2), px: p2.x, py: p2.y };
+      const sudutC = { angle: angleP3Deg.toFixed(2), px: p3.x, py: p3.y };
 
       visualizationArea.innerHTML = `
         <svg width="600" height="480" class="triangle-canvas mx-auto d-block">
@@ -464,21 +476,36 @@
                 class="clickable-line" 
                 data-side="a" data-value="${a}" />
           
+          <!-- Label Sisi c (bawah) -->
+          <text x="${(p1.x + p2.x) / 2}" y="${p1.y + 25}" 
+                fill="#8B5CF6" font-size="18" font-weight="bold" 
+                text-anchor="middle">c = ${c}</text>
+          
+          <!-- Label Sisi b (kiri) -->
+          <text x="${(p1.x + p3.x) / 2 - 30}" y="${(p1.y + p3.y) / 2}" 
+                fill="#8B5CF6" font-size="18" font-weight="bold" 
+                text-anchor="middle">b = ${b}</text>
+          
+          <!-- Label Sisi a (kanan) -->
+          <text x="${(p2.x + p3.x) / 2 + 30}" y="${(p2.y + p3.y) / 2}" 
+                fill="#8B5CF6" font-size="18" font-weight="bold" 
+                text-anchor="middle">a = ${a}</text>
+          
           <circle cx="${sudutA.px}" cy="${sudutA.py}" r="12" fill="#EC4899" 
                   class="clickable-circle" 
-                  data-position="A" data-angle="${Math.round(sudutA.angle)}" />
+                  data-position="A" data-angle="${sudutA.angle}" />
           <text x="${sudutA.px}" y="${sudutA.py + 5}" fill="white" font-size="16" 
                 font-weight="bold" text-anchor="middle" style="pointer-events: none;">A</text>
           
           <circle cx="${sudutB.px}" cy="${sudutB.py}" r="12" fill="#EC4899" 
                   class="clickable-circle" 
-                  data-position="B" data-angle="${Math.round(sudutB.angle)}" />
+                  data-position="B" data-angle="${sudutB.angle}" />
           <text x="${sudutB.px}" y="${sudutB.py + 5}" fill="white" font-size="16" 
                 font-weight="bold" text-anchor="middle" style="pointer-events: none;">B</text>
           
           <circle cx="${sudutC.px}" cy="${sudutC.py}" r="12" fill="#EC4899" 
                   class="clickable-circle" 
-                  data-position="C" data-angle="${Math.round(sudutC.angle)}" />
+                  data-position="C" data-angle="${sudutC.angle}" />
           <text x="${sudutC.px}" y="${sudutC.py + 5}" fill="white" font-size="16" 
                 font-weight="bold" text-anchor="middle" style="pointer-events: none;">C</text>
         </svg>
@@ -549,7 +576,7 @@
     // Event listeners
     sideAInput.addEventListener('input', updateState);
     sideBInput.addEventListener('input', updateState);
-    sideCInput.addEventListener('input', updateState);
+    sideCInput.addEventListener('change', updateState);
     operatorSelect.addEventListener('change', updateState);
     resetBtn.addEventListener('click', handleReset);
 
